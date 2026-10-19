@@ -1,0 +1,5 @@
+﻿참고/
+.env
+__pycache__/
+*.pyc
+
