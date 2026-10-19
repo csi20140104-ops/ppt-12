@@ -143,11 +143,6 @@ def _base_geometry(base_size: BaseGeometry) -> tuple[float, float, float, float]
     return 0.0, 0.0, float(base_size), float(base_size)
 
 
-# Either quote style: a single-quoted marker silently fell back to a recolored
-# monochrome icon, dropping the asset's text, colors, and group transforms.
-_PRESERVE_COLOR_RE = re.compile(r'data-icon-style\s*=\s*["\']preserve-color["\']')
-
-
 def _is_preserve_color_asset(content: str) -> bool:
     """Project illustrations are vector assets, not recolorable monochrome icons.
 
@@ -155,16 +150,13 @@ def _is_preserve_color_asset(content: str) -> bool:
     extract_svg_assets.py and is the single source of truth — hand-authored
     multi-color assets must carry it to keep their colors and aspect ratio.
     """
-    return _PRESERVE_COLOR_RE.search(content) is not None
+    return 'data-icon-style="preserve-color"' in content
 
 
 def _detect_icon_style(content: str) -> str:
     """Detect whether an icon is fill-based or stroke-based."""
-    # stroke="currentColor" with fill="none" → stroke style (either quote)
-    if (
-        re.search(r'stroke\s*=\s*["\']currentColor["\']', content)
-        and re.search(r'fill\s*=\s*["\']none["\']', content)
-    ):
+    # stroke="currentColor" with fill="none" → stroke style
+    if 'stroke="currentColor"' in content and 'fill="none"' in content:
         return 'stroke'
     return 'fill'
 

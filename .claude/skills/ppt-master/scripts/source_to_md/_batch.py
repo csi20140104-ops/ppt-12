@@ -84,16 +84,8 @@ def _output_for(
     batch_mode: bool,
     used_outputs: set[Path],
 ) -> Path:
-    if batch_mode:
-        output_dir = Path(output_arg) if output_arg else source.parent
-        default_output = output_dir / f"{source.stem}.md"
-        output = unique_output_path(output_dir, source.stem, used_outputs)
-        if output != default_output:
-            _print_status(
-                f"[INFO] Renamed output for {source}: {default_output} -> {output} "
-                "(input/output collision)"
-            )
-        return output
+    if output_arg and batch_mode:
+        return unique_output_path(Path(output_arg), source.stem, used_outputs)
     if output_arg:
         return Path(output_arg)
     return source.with_suffix(".md")
@@ -123,7 +115,7 @@ def run_path_batch(
     success_count = 0
     failed: list[str] = []
     skipped: list[str] = list(expansion_errors)
-    used_outputs = {source.resolve() for source in sources}
+    used_outputs: set[Path] = set()
 
     for source in sources:
         output = _output_for(source, output_arg, batch_mode, used_outputs)

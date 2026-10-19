@@ -31,7 +31,6 @@ from pathlib import Path
 from typing import Any
 
 from console_encoding import configure_utf8_stdio
-from slide_roster import sort_slide_paths
 
 configure_utf8_stdio()
 
@@ -201,7 +200,7 @@ def _page_subtitle_paths(subtitle_dir: Path) -> list[Path]:
     """Resolve the ordered page-local SRT set without reading notes."""
     paths = [
         path
-        for path in sort_slide_paths(subtitle_dir.glob("*.srt"))
+        for path in sorted(subtitle_dir.glob("*.srt"))
         if path.stem != "total"
     ]
     if not paths:

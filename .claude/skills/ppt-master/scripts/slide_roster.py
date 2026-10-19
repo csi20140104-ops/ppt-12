@@ -17,7 +17,6 @@ Dependencies:
 from __future__ import annotations
 
 import re
-from collections.abc import Iterable
 from pathlib import Path
 
 
@@ -37,11 +36,9 @@ def _slide_filename_sort_key(
     return segments, name
 
 
-def sort_slide_paths(paths: Iterable[Path]) -> list[Path]:
-    """Order per-page files (SVG, notes, SRT) by numeric filename segments."""
-    return sorted(paths, key=_slide_filename_sort_key)
-
-
 def discover_slide_svgs(directory: Path) -> list[Path]:
     """Return direct child SVG files in numeric filename order."""
-    return sort_slide_paths(directory.glob("*.svg"))
+    return sorted(
+        directory.glob("*.svg"),
+        key=_slide_filename_sort_key,
+    )
